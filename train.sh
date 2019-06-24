@@ -21,9 +21,9 @@ python run_bert_dst.py \
   --nolocation_loss_for_nonpointable \
   --max_seq_length=180 \
   --data_dir=$DATA_DIR \
-  --vocab_file=$PRETRAINED_BERT/vocab.txt \
-  --bert_config_file=$PRETRAINED_BERT/bert_config.json \
-  --init_checkpoint=$PRETRAINED_BERT/bert_model.ckpt \
+  --vocab_file=${PRETRAINED_BERT}/vocab.txt \
+  --bert_config_file=${PRETRAINED_BERT}/bert_config.json \
+  --init_checkpoint=${PRETRAINED_BERT}/bert_model.ckpt \
   --learning_rate=2e-5 \
   --num_train_epochs=100 \
   --output_dir=$OUTPUT_DIR \

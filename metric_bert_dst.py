@@ -18,7 +18,7 @@ def get_joint_slot_correctness(fp,
     total_correctness = []
 
     for pred in preds:
-      guid = pred['guid']
+      guid = pred['guid']  # List: set_type, dialogue_idx, turn_idx
       turn_gt_class = pred[key_class_label_id]
       turn_pd_class = pred[key_class_prediction]
       gt_start_pos = pred[key_start_pos]
@@ -26,7 +26,7 @@ def get_joint_slot_correctness(fp,
       gt_end_pos = pred[key_end_pos]
       pd_end_pos = pred[key_end_prediction]
 
-      if guid.split('-')[-1] == '0': # First turn, reset the slots
+      if guid[-1] == '0': # First turn, reset the slots
         joint_gt_class = turn_gt_class
         joint_gt_start_pos = gt_start_pos
         joint_gt_end_pos = gt_end_pos
@@ -47,15 +47,9 @@ def get_joint_slot_correctness(fp,
       if joint_gt_class == joint_pd_class:
         class_correctness.append(1.0)
         if joint_gt_class == 2:
-          #overlap = set(range(joint_gt_start_pos, joint_gt_end_pos+1)).intersection(range(joint_pd_start_pos, joint_pd_end_pos+1))
-
           if joint_gt_start_pos == joint_pd_start_pos and joint_gt_end_pos == joint_pd_end_pos:
-          # if joint_gt_start_pos <= joint_pd_start_pos and joint_gt_end_pos >= joint_pd_end_pos:
-          # if joint_gt_start_pos <= joint_pd_end_pos or joint_gt_end_pos >= joint_pd_start_pos:
-          # if len(overlap) > 0:
             pos_correctness.append(1.0)
           else:
-            #print('Wrong position prediciton: guid %s, gt=(%d, %d), pd=(%d, %d)' % (guid, joint_gt_start_pos, joint_gt_end_pos, joint_pd_start_pos, joint_pd_end_pos))
             pos_correctness.append(0.0)
             total_correct = False
       else:

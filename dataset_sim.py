@@ -106,7 +106,7 @@ def create_examples(dialog_filename, slot_list, set_type):
     dial_id = dial['dialogue_id']
     prev_ds = []
     for turn_id, turn in enumerate(dial['turns']):
-      guid = ('%s-%s-%s' % (set_type, dial_id, str(turn_id))).encode('utf8')
+      guid = '%s-%s-%s' % (set_type, dial_id, str(turn_id))
       (sys_utt_tok,
        sys_utt_tok_label_dict,
        usr_utt_tok,

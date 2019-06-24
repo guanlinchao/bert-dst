@@ -11,7 +11,8 @@ OUTPUT_DIR=/path/to/output
 # DSET can be "dev" or "test"
 DSET="dev"
 
-for num in {0..1000..10000}; do
+# Comma separated list of checkpoint steps to be evaluated.
+for num in {0..12000..1000}; do
   CKPT_NUM="$CKPT_NUM,$num"
 done
 
@@ -23,9 +24,9 @@ python run_bert_dst.py \
   --eval_set=$DSET \
   --eval_ckpt=$CKPT_NUM \
   --data_dir=$DATA_DIR \
-  --vocab_file=PRETRAINED_BERT/vocab.txt \
-  --bert_config_file=PRETRAINED_BERT/bert_config.json \
-  --init_checkpoint=PRETRAINED_BERT/bert_model.ckpt \
+  --vocab_file=${PRETRAINED_BERT}/vocab.txt \
+  --bert_config_file=${PRETRAINED_BERT}/bert_config.json \
+  --init_checkpoint=${PRETRAINED_BERT}/bert_model.ckpt \
   --output_dir=$OUTPUT_DIR \
   2>&1 | tee -a $OUTPUT_DIR/eval.log
 

@@ -29,7 +29,7 @@ flags.DEFINE_string(
 
 flags.DEFINE_string(
     "eval_ckpt", "",
-    "space seperated ckpt numbers to be evaluated.")
+    "comma seperated ckpt numbers to be evaluated.")
 
 flags.DEFINE_integer(
     "num_class_hidden_layer", 0,
@@ -278,7 +278,7 @@ def file_based_convert_examples_to_features(
       features["end_pos_%s" % slot] = create_int_feature([feature.end_pos[slot]])
       features["class_label_id_%s" % slot] = create_int_feature([feature.class_label_id[slot]])
     features["is_real_example"] = create_int_feature([int(feature.is_real_example)])
-    features["guid"] = tf.train.Feature(bytes_list=tf.train.BytesList(value=[str.encode(str(feature.guid))]))
+    features["guid"] = tf.train.Feature(bytes_list=tf.train.BytesList(value=[feature.guid.encode('utf-8')]))
 
     tf_example = tf.train.Example(features=tf.train.Features(feature=features))
     writer.write(tf_example.SerializeToString())
@@ -762,12 +762,12 @@ def main(_):
     else:
       eval_result = []
 
-    ckpt_nums = [num for num in FLAGS.eval_ckpt.split(',') if num != ""]
+    ckpt_nums = [num.strip() for num in FLAGS.eval_ckpt.split(',') if num.strip() != ""]
     for ckpt_num in ckpt_nums:
       result = estimator.evaluate(input_fn=eval_input_fn, steps=eval_steps,
                                   checkpoint_path=os.path.join(FLAGS.output_dir,
                                   "model.ckpt-%s" % ckpt_num))
-      result_dict = {k: float(v) for k, v in result.iteritems()}
+      result_dict = {k: float(v) for k, v in result.items()}
       eval_result.append(result_dict)
       tf.logging.info("***** Eval results for %s set *****", FLAGS.eval_set)
       for key in sorted(result.keys()):
@@ -822,15 +822,23 @@ def main(_):
         tf.logging.info("***** Predict results for %s set *****", FLAGS.eval_set)
         list_prediction = []
         for (i, prediction) in enumerate(result):
+          # Str feature is encoded as bytes, which is not JSON serializable.
+          # Hence convert to str.
+          prediction["guid"] = prediction["guid"].decode("utf-8").split("-")
           for slot in slot_list:
             start_pd = prediction['start_prediction_%s' % slot]
+            start_gt = prediction['start_pos_%s' % slot]
             end_pd = prediction['start_prediction_%s' % slot]
-            start_gt = int(prediction['start_pos_%s' % slot])
-            end_gt = int(prediction['end_pos_%s' % slot])
+            end_gt = prediction['end_pos_%s' % slot]
+            # TF uses int64, which is not JSON serializable.
+            # Hence convert to int.
+            prediction['class_prediction_%s' % slot] = int(prediction['class_prediction_%s' % slot])
             prediction['class_label_id_%s' % slot] = int(prediction['class_label_id_%s' % slot])
-            prediction['start_pos_%s' % slot] = start_gt
-            prediction['end_pos_%s' % slot] = end_gt
-            prediction["input_ids_%s" % slot] = prediction["input_ids_%s" % slot].tolist()
+            prediction['start_prediction_%s' % slot] = int(start_pd)
+            prediction['start_pos_%s' % slot] = int(start_gt)
+            prediction['end_prediction_%s' % slot] = int(end_pd)
+            prediction['end_pos_%s' % slot] = int(end_gt)
+            prediction["input_ids_%s" % slot] = list(map(int, prediction["input_ids_%s" % slot].tolist()))
             input_tokens = tokenizer.convert_ids_to_tokens(prediction["input_ids_%s" % slot])
             prediction["slot_prediction_%s" % slot] = ' '.join(input_tokens[start_pd:end_pd+1])
             prediction["slot_groundtruth_%s" % slot] = ' '.join(input_tokens[start_gt:end_gt + 1])
