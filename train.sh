@@ -12,13 +12,12 @@ PRETRAINED_BERT=/path/to/uncased_L-12_H-768_A-12
 OUTPUT_DIR=/path/to/output
 
 mkdir -p $OUTPUT_DIR
-python run_bert_dst.py \
+python main.py \
   --bert_dir=${BERT_DIR} \
   --task_name=${TASK} \
   --do_train=true \
   --train_batch_size=16 \
   --slot_value_dropout=0.0 \
-  --nolocation_loss_for_nonpointable \
   --max_seq_length=180 \
   --data_dir=$DATA_DIR \
   --vocab_file=${PRETRAINED_BERT}/vocab.txt \
