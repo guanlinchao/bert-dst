@@ -42,11 +42,7 @@ flags.DEFINE_integer(
 flags.DEFINE_float("dropout_rate", 0.3, "Dropout rate for BERT representations.")
 
 flags.DEFINE_bool(
-    "slot_last_occurrence", False,
-    "Whether to only detect the last occurrence of slot value, as opposed to all occurrence.")
-
-flags.DEFINE_bool(
-    "location_loss_for_nonpointable", True,
+    "location_loss_for_nonpointable", False,
     "Whether the location loss for none or dontcare is contributed towards total loss.")
 
 flags.DEFINE_float("class_loss_ratio", 0.8,
