@@ -16,7 +16,7 @@ for num in {0..12000..1000}; do
   CKPT_NUM="$CKPT_NUM,$num"
 done
 
-python run_bert_dst.py \
+python main.py \
   --task_name=${TASK} \
   --do_eval=true \
   --do_predict=true \
