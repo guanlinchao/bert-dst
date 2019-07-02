@@ -54,7 +54,7 @@ flags.DEFINE_float("slot_value_dropout", 0.0,
                    "The rate that targeted slot value was replaced by [UNK].")
 
 
-class SpanInputFeatures(object):
+class InputFeatures(object):
   """A single set of features of data."""
 
   def __init__(self,
@@ -169,7 +169,7 @@ def convert_single_example(ex_index, example, slot_list, class_types, max_seq_le
   """Converts a single `InputExample` into a single `InputFeatures`."""
 
   if isinstance(example, run_classifier.PaddingInputExample):
-    return SpanInputFeatures(
+    return InputFeatures(
         input_ids=[0] * max_seq_length,
         input_mask=[0] * max_seq_length,
         segment_ids=[0] * max_seq_length,
@@ -230,7 +230,7 @@ def convert_single_example(ex_index, example, slot_list, class_types, max_seq_le
     tf.logging.info("class_label_id: %s" % str(class_label_id_dict))
 
 
-  feature = SpanInputFeatures(
+  feature = InputFeatures(
       input_ids=input_ids,
       input_mask=input_mask,
       segment_ids=segment_ids,
