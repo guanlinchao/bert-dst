@@ -244,7 +244,7 @@ def convert_single_example(ex_index, example, slot_list, class_types, max_seq_le
 
 def file_based_convert_examples_to_features(
     examples, slot_list, class_types, max_seq_length, tokenizer, output_file):
-  """Convert a set of `InputExamples` to a TFRecord file."""
+  """Convert a set of `InputExample`s to a TFRecord file."""
 
   writer = tf.python_io.TFRecordWriter(output_file)
 
