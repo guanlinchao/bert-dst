@@ -6,6 +6,7 @@ import tensorflow as tf
 
 import util
 
+# Directory of bert, cloned from github.com/google-research/bert
 sys.path.append("/path/to/bert")
 import tokenization
 
