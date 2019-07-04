@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-# Directory of bert, cloned from github.com/google-research/bert
-BERT_DIR=/path/to/bert
 # TASK can be "dstc2_clean", "woz2", "sim-m", or "sim-r"
 TASK="dstc2_clean"
 # Directory for dstc2-clean, woz_2.0, sim-M, or sim-R, which contains json files
@@ -13,7 +11,6 @@ OUTPUT_DIR=/path/to/output
 
 mkdir -p $OUTPUT_DIR
 python main.py \
-  --bert_dir=${BERT_DIR} \
   --task_name=${TASK} \
   --do_train=true \
   --train_batch_size=16 \
