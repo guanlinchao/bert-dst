@@ -2,7 +2,7 @@
 
 Contact: Guan-Lin Chao (guanlinchao@cmu.edu)
 
-An implementation of the BERT-DST: Scalable End-to-End Dialogue State Tracking with Bidirectional Encoder Representations from Transformer (Interspeech 2019).
+Source code of our paper [BERT-DST: Scalable End-to-End Dialogue State Tracking with Bidirectional Encoder Representations from Transformer](https://arxiv.org/pdf/1907.03040.pdf) (Interspeech 2019).
 
 Tested on Python 3.6, Tensorflow==1.13.0rc0
 
