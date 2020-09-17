@@ -19,4 +19,4 @@ Tested on Python 3.6, Tensorflow==1.13.0rc0
 2. uncased_L-12_H-768_A-12: pretrained [BERT-Base, Uncased] model checkpoint. Download link in [bert](https://github.com/google-research/bert).
 
 ## Datasets:
-dstc2-clean, woz_2.0, [sim-M and sim-R](https://github.com/google-research-datasets/simulated-dialogue)
+[dstc2-clean](https://github.com/guanlinchao/bert-dst/blob/master/storage/dstc2-clean.zip), [woz_2.0](https://github.com/guanlinchao/bert-dst/blob/master/storage/woz_2.0.zip), [sim-M and sim-R](https://github.com/google-research-datasets/simulated-dialogue)
