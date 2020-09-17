@@ -185,3 +185,63 @@ def create_examples(dialog_filename, slot_list, set_type, use_asr_hyp=0,
             class_label=class_type_dict))
   return examples
 
+def create_examples_with_history(dialog_filename, slot_list, set_type, use_asr_hyp=0, exclude_unpointable=True):
+  examples = []
+  with open(dialog_filename) as f:
+    dst_set = json.load(f)
+  for dial in dst_set:
+    if use_asr_hyp == 0:
+      his_utt_list = [[]]
+    else:
+      his_utt_list = [[] for _ in range(use_asr_hyp)]
+
+    for turn in dial['dialogue']:
+      guid = '%s-%s-%s' % (set_type, str(dial['dialogue_idx']), str(turn['turn_idx']))
+
+      sys_utt_tok = tokenize(turn['system_transcript'])
+
+      for his_utt in his_utt_list:
+        his_utt.append(sys_utt_tok)
+
+      usr_utt_tok_list = []
+      if use_asr_hyp == 0:
+        usr_utt_tok_list.append(tokenize(turn['transcript']))
+      else:
+        for asr_hyp in turn.asr[:use_asr_hyp]:
+          usr_utt_tok_list.append(tokenize(asr_hyp))
+
+      turn_label = [[FIX.get(s.strip(), s.strip()), FIX.get(v.strip(), v.strip())] for s, v in turn['turn_label']]
+
+      for his_utt, usr_utt_tok in zip(his_utt_list, usr_utt_tok_list):
+        his_utt_tok = []
+        for utt_tok in his_utt[-5:]:
+          his_utt_tok.extend(utt_tok)
+        his_utt_tok_label_dict = {}
+        usr_utt_tok_label_dict = {}
+        class_type_dict = {}
+        for slot in slot_list:
+          label = 'none'
+          for [s, v] in turn_label:
+            if s == slot:
+              label = v
+              break
+          his_utt_tok_label, usr_utt_tok_label, class_type = get_turn_label(
+            label, his_utt_tok, usr_utt_tok, slot_last_occurrence=True)
+          his_utt_tok_label_dict[slot] = his_utt_tok_label
+          usr_utt_tok_label_dict[slot] = usr_utt_tok_label
+          class_type_dict[slot] = class_type
+          if class_type == 'unpointable':
+            tf.logging.info('Unpointable: guid=%s, slot=%s, label=%s, his_utt=%s, usr_utt=%s' % (guid, slot, label, his_utt_tok, usr_utt_tok))
+        if 'unpointable' not in class_type_dict.values() or not exclude_unpointable:
+          examples.append(util.InputExample(guid=guid,
+                                            text_a=his_utt_tok,
+                                            text_b=usr_utt_tok,
+                                            text_a_label=his_utt_tok_label_dict,
+                                            text_b_label=usr_utt_tok_label_dict,
+                                            class_label=class_type_dict))
+
+      for his_utt, usr_utt_tok in zip(his_utt_list, usr_utt_tok_list):
+        his_utt.append(usr_utt_tok)
+  return examples
+
+

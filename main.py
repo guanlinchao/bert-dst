@@ -101,16 +101,16 @@ class Woz2Processor(object):
   slot_list = ['area', 'food', 'price range']
 
   def get_train_examples(self, data_dir):
-    return dataset_dstc2.create_examples(
+    return dataset_dstc2.create_examples_with_history(
       os.path.join(data_dir, 'woz_train_en.json'), self.slot_list, 'train')
 
   def get_dev_examples(self, data_dir):
-    return dataset_dstc2.create_examples(
+    return dataset_dstc2.create_examples_with_history(
       os.path.join(data_dir, 'woz_validate_en.json'), self.slot_list, 'dev',
       use_asr_hyp=0, exclude_unpointable=False)
 
   def get_test_examples(self, data_dir):
-    return dataset_dstc2.create_examples(
+    return dataset_dstc2.create_examples_with_history(
       os.path.join(data_dir, 'woz_test_en.json'), self.slot_list, 'test',
       use_asr_hyp=0, exclude_unpointable=False)
 
